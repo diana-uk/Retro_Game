@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">[22B10357] דיאנה אוקראינסקי 321268112</string>
+    <string name="two_lives_left">נותרו לך עוד שתי נסיונות !</string>
+    <string name="one_life_left">נותר לך נסיון אחד אחרון ! כדאי להזהר.</string>
+    <string name="enter_your_name">הכנס את שמך</string>
+    <string name="start_game_with_sensors">התחל משחק עם סנסורים</string>
+    <string name="start_game_with_buttons">התחל משחק עם כפתורים</string>
+    <string name="go_to_top_ten">השחקנים המובילים</string>
+    <string name="enter_name">הכנס שם</string>
+    <string name="next">המשך</string>
+    <string name="top_players">המובילים</string>
+</resources>

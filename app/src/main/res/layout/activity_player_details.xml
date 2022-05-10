@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.PlayerDetailsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FAE8E0"
+        android:gravity="center">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/details_IMG_hero"
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+
+            </ImageView>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/enterName_LBL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/enter_your_name"
+                android:textColor="@color/black"
+                android:textSize="40sp">
+
+            </com.google.android.material.textview.MaterialTextView>
+
+            <EditText
+                android:id="@+id/details_EDT_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:ems="10"
+                android:fontFamily="sans-serif"
+                android:hint="@string/enter_name"
+                android:inputType="textPersonName" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/details_BTN_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/details_EDT_name"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="100dp"
+                android:backgroundTint="#D8A7B1"
+                android:fontFamily="sans-serif-black"
+                android:text="@string/next"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:iconPadding="20dp"
+                app:iconSize="40dp"
+                app:iconTint="#9E9E9E">
+
+            </com.google.android.material.button.MaterialButton>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
