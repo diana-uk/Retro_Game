@@ -37,6 +37,7 @@ public class GameActivity extends AppCompatActivity {
     private ImageView game_IMG_btnDown;
     private ImageView game_IMG_btnRight;
     private ImageView game_IMG_btnLeft;
+
     private MaterialTextView game_TXT_score;
     private GameManager gameManager;
 
@@ -90,7 +91,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setMotionSensorsListener() {
-
         accSensorEventListener = new SensorEventListener () {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
@@ -155,13 +155,13 @@ public class GameActivity extends AppCompatActivity {
         gameManager.updateGameData ();
 
         if (gameManager.checkIfCollision ()) {
-            updateUI ();
             collisionSound.start ();
             gameManager.setCurrentCollisionType (CollisionType.ENEMY_AND_FUGITIVE);
             timerManager.stopTimer ();
             vibrateOnce ();
             gameManager.updateCollisionEventGameData ();
             updateCollisionEventUI ();
+            updateUI ();
 
             if (gameManager.isGameOver ()) {
                 updateUI ();
@@ -181,10 +181,14 @@ public class GameActivity extends AppCompatActivity {
             gameManager.updateCollisionCoinEventData ();
             updateCollisionCoinEventUI ();
             updateCoin ();
+            updateUI ();
         }
-        else if(gameManager.checkIfCoinReplacement())
+        else if(gameManager.checkIfCoinReplacement()) {
             updateCoin ();
-             updateUI ();
+            updateUI ();
+        }
+        else
+            updateUI ();
 
     }
 
