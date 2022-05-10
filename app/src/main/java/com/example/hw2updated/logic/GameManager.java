@@ -23,9 +23,9 @@ public class GameManager {
     private int score = 0;
     private int lives = MAX_LIVES;
 
-    private GameBoardObject fugitivePlayer;
-    private GameBoardObject enemyPlayer;
-    private GameBoardObject coinObject;
+    private FugitiveObject fugitivePlayer;
+    private EnemyObject enemyPlayer;
+    private CoinObject coinObject;
     private GameBoard gameBoard;
     private CollisionType currentCollisionType;
     private GameType currentGameType;
@@ -86,9 +86,6 @@ public class GameManager {
         return coinObject.getCurrentPositionCol();
     }
 
-    public MoveDirection getPreviousFugitiveDirection() {
-        return fugitivePlayer.getPreviousDirection ();
-    }
     public MoveDirection getCurrentFugitiveDirection() {
         return fugitivePlayer.getCurrentDirection ();
     }
@@ -107,10 +104,6 @@ public class GameManager {
 
     public void reduceLives() {
         lives--;
-    }
-
-    public CollisionType getCurrentCollisionType() {
-        return currentCollisionType;
     }
 
     public GameManager setCurrentCollisionType(CollisionType currentCollisionType) {
@@ -132,8 +125,6 @@ public class GameManager {
         fugitivePlayer.savePreviousDirection(fugitivePlayer.getCurrentDirection ());
         fugitivePlayer.setCurrentDirection(moveDirection);
     }
-
-
 
     public void updateEnemyPlayerDirectionData() {
         Random r = new Random();
@@ -173,6 +164,11 @@ public class GameManager {
 
         //update score
         updateScore();
+
+        if(coinObject.checkIfCoinReplacement())
+            coinObject.setCoinExistenceToStartTime ();
+        else
+            coinObject.updateCoinExistenceTime ();
     }
 
     private void updateFugitivePlayerPositionData(GameBoardObject fugitivePlayer) {
@@ -306,5 +302,9 @@ public class GameManager {
 
     public void setCurrentRecord(Record currentRecord) {
         this.currentRecord = currentRecord;
+    }
+
+    public boolean checkIfCoinReplacement() {
+        return coinObject.checkIfCoinReplacement();
     }
 }

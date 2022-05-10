@@ -18,12 +18,14 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hw2updated.callbacks.CallBack_TimerUpdate;
 import com.example.hw2updated.data.Record;
 import com.example.hw2updated.models.CollisionType;
 import com.example.hw2updated.logic.GameManager;
 import com.example.hw2updated.models.GameType;
 import com.example.hw2updated.models.MoveDirection;
 import com.example.hw2updated.R;
+import com.example.hw2updated.utils.TimerManager;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.Gson;
@@ -45,6 +47,8 @@ public class GameActivity extends AppCompatActivity {
     private MediaPlayer coinSound;
     private MediaPlayer collisionSound;
 
+    private TimerManager timerManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
@@ -57,8 +61,14 @@ public class GameActivity extends AppCompatActivity {
         initSounds();
         initSensors();
         setListeners ();
+        initTimer();
 
         initGame ();
+    }
+
+    private void initTimer() {
+        CallBack_TimerUpdate callBack_Timer_update = () -> runOnUiThread(this::update);
+        timerManager = new TimerManager (callBack_Timer_update);
     }
 
     private void initSensors() {
@@ -103,8 +113,7 @@ public class GameActivity extends AppCompatActivity {
         if(gameManager.getCurrentGameType ().equals (GameType.SENSORS))
             cleanGameArrows ();
         gameManager.initPosition ();
-        startTimer ();
-        startCoinTimer();
+        timerManager.startTimer ();
     }
 
     private void updateFugitivePlayerDirection(MoveDirection moveDirection) {
@@ -144,37 +153,41 @@ public class GameActivity extends AppCompatActivity {
 
     private void update() {
         gameManager.updateGameData ();
-        updateUI ();
 
         if (gameManager.checkIfCollision ()) {
+            updateUI ();
             collisionSound.start ();
             gameManager.setCurrentCollisionType (CollisionType.ENEMY_AND_FUGITIVE);
-            stopTimer ();
-            //Stop coin timer
-            stopCoinTimer ();
+            timerManager.stopTimer ();
             vibrateOnce ();
             gameManager.updateCollisionEventGameData ();
             updateCollisionEventUI ();
 
             if (gameManager.isGameOver ()) {
+                updateUI ();
                 saveGameData();
                 openLeaderboards();
 
                 finish ();
             }
             else {
+                updateUI ();
                 showMessageOfLivesLeft ();
                 initGame ();
             }
         } else if (gameManager.checkIfCoinCollision ()) {
             coinSound.start ();
             gameManager.setCurrentCollisionType (CollisionType.COIN);
-            stopCoinTimer ();
             gameManager.updateCollisionCoinEventData ();
             updateCollisionCoinEventUI ();
             updateCoin ();
         }
+        else if(gameManager.checkIfCoinReplacement())
+            updateCoin ();
+             updateUI ();
+
     }
+
     //Method opens the the leaderboards
     private void openLeaderboards() {
         Intent intent = new Intent (this, LeaderboardsActivity.class);
@@ -262,9 +275,9 @@ public class GameActivity extends AppCompatActivity {
 
         for (int i = 0; i < gameManager.getMatRows (); i++) {
             for (int j = 0; j < gameManager.getMatCols (); j++) {
-                //TODO create boolean method to check the if
-                if (i == currentCoinRow && j == currentCoinCol)
+                if (i == currentCoinRow && j == currentCoinCol) {
                     game_IMG_matrix[i][j].setImageResource (R.drawable.ic_cheese);
+                }
                 else
                     game_IMG_matrix[i][j].setImageResource (0);
             }
@@ -317,7 +330,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void saveGameData() {
-        Log.d ("pttt", "save game data: ");
         gameManager.saveData();
     }
 
@@ -332,88 +344,4 @@ public class GameActivity extends AppCompatActivity {
         super.onPause ();
         sensorManager.unregisterListener (accSensorEventListener);
     }
-
-    // =====================TIMER=====================
-
-    private final int DELAY = 1000;
-    private final int COIN_DELAY = 10000;
-
-
-    private enum TIMER_STATUS {
-        OFF,
-        RUNNING,
-        PAUSE
-    }
-
-    private TIMER_STATUS timerStatus = TIMER_STATUS.OFF;
-    private TIMER_STATUS timerCoinStatus = TIMER_STATUS.OFF;
-
-
-    private final Handler handler = new Handler ();
-    private Runnable runnable = new Runnable () {
-        public void run() {
-            handler.postDelayed (runnable, DELAY);
-            runOnUiThread (new Runnable () {
-                @Override
-                public void run() {
-                    update ();
-                }
-            });
-
-        }
-    };
-
-    private void startTimer() {
-        timerStatus = TIMER_STATUS.RUNNING;
-        handler.postDelayed (runnable, DELAY);
-    }
-
-    private void startCoinTimer() {
-        timerCoinStatus = TIMER_STATUS.RUNNING;
-        coinHandler.postDelayed (coinRunnable, COIN_DELAY);
-    }
-
-    private void stopTimer() {
-        timerStatus = TIMER_STATUS.PAUSE;
-        handler.removeCallbacks (runnable);
-    }
-
-    private void stopCoinTimer() {
-        timerCoinStatus = TIMER_STATUS.PAUSE;
-        coinHandler.removeCallbacks (runnable);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop ();
-        if (timerStatus == TIMER_STATUS.RUNNING) {
-            stopTimer ();
-        }
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart ();
-        if (timerStatus == TIMER_STATUS.PAUSE) {
-            startTimer ();
-        }
-    }
-
-    private final Handler coinHandler = new Handler ();
-    private Runnable coinRunnable = new Runnable () {
-        public void run() {
-            coinHandler.postDelayed (coinRunnable, COIN_DELAY);
-            runOnUiThread (new Runnable () {
-                @Override
-                public void run() {
-                    Log.d ("pttt", "update coin ");
-                    updateCoin ();
-                }
-            });
-
-        }
-    };
-
-
 }

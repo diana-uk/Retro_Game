@@ -32,10 +32,6 @@ public abstract class GameBoardObject {
         return currentDirection;
     }
 
-    public MoveDirection getPreviousDirection() {
-        return previousDirection;
-    }
-
     public GameBoardObject setCurrentPositionRow(int currentPositionRow) {
         this.currentPositionRow = currentPositionRow;
         return this;
@@ -54,6 +50,4 @@ public abstract class GameBoardObject {
     public void savePreviousDirection(MoveDirection moveDirection) {
         this.previousDirection=moveDirection;
     }
-
-
 }
